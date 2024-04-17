@@ -7,7 +7,7 @@ import math
 
 
 MIN_PRICE_CHANGE_24_HRS = 6
-TARGET_PERCENTAGE_PROFIT = .05
+TARGET_PERCENTAGE_PROFIT = .06
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
             continue
         
         rest_client.market_order_buy(client_order_id=order_id, product_id=product_id, quote_size=str(quote_size))
-        time.sleep(3)
+        time.sleep(8)
         sell_limit_product(rest_client=rest_client, product_id=product_id, buy_price=price)
         time.sleep(3)
         
