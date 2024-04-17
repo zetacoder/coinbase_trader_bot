@@ -49,7 +49,7 @@ def main():
         quote_increment = float(product['quote_increment'])
         quote_min_size= float(product['quote_min_size'])
         order_id = str(uuid.uuid4())
-        quote_size = round((quote_min_size + quote_increment + 2), 2)
+        quote_size = round((quote_min_size + quote_increment + 1), 2)
         
         if quote_size > usdc_balance:
             print(f'Skipping product: {product_id}. Current quote size: {quote_size}, current balance: {usdc_balance}')
@@ -83,7 +83,7 @@ def sell_limit_product(rest_client: RESTClient, product_id: str, buy_price: floa
     limit_price = round(buy_price * (1 + TARGET_PERCENTAGE_PROFIT), 4)
     
     if float(quantity_of_asset) < float(min_base_size):
-        print("dont have sufficient asset to sell")
+        print(f"You dont have sufficient asset to sell. Current: {quantity_of_asset} | Min to sell: {min_base_size}")
         return
     
     rest_client.limit_order_gtc_sell(client_order_id=client_order_id, product_id=product_id, base_size=str(quantity_of_asset), limit_price=str(limit_price))
