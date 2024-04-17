@@ -1,6 +1,2 @@
-os
-time
 dotenv
 coinbase-advanced-py
-uuid
-math
