@@ -78,7 +78,7 @@ def sell_limit_product(rest_client: RESTClient, product_id: str, buy_price: floa
             product_wallet = wallet
     
 
-    quantity_of_asset = math.trunc(float(product_wallet['available_balance']['value']))
+    quantity_of_asset = round(float(product_wallet['available_balance']['value']), 4)
    
     limit_price = round(buy_price * (1 + TARGET_PERCENTAGE_PROFIT), 4)
     
