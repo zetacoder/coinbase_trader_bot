@@ -39,8 +39,20 @@ def main():
         if product_id.endswith('USDC') and float(price_change) > MIN_PRICE_CHANGE_24_HRS and not product_id in products_being_selled:
             to_buy.append(spot_product)
     
+    total_balance = float(rest_client.get_account(wallet_id_usdc)['account']['available_balance']['value'])
+    valid_amount = False
+    number_of_products_to_buy = len(to_buy)
+    to_spend_on_each_product = (total_balance / number_of_products_to_buy) * .98
     
-    for product in to_buy:
+    while not valid_amount:
+        if to_spend_on_each_product > 1:
+            valid_amount = True
+        else:
+            number_of_products_to_buy -= 1
+            to_spend_on_each_product =  (total_balance / number_of_products_to_buy)
+    
+    
+    for product in to_buy[:number_of_products_to_buy]:
         usdc_balance = float(rest_client.get_account(wallet_id_usdc)['account']['available_balance']['value'])
         
         # get data of the product
@@ -49,16 +61,16 @@ def main():
         quote_increment = float(product['quote_increment'])
         quote_min_size= float(product['quote_min_size'])
         order_id = str(uuid.uuid4())
-        quote_size = round((quote_min_size + quote_increment + 1), 2)
+        quote_size = round((to_spend_on_each_product +  quote_increment), 2)
         
         if quote_size > usdc_balance:
             print(f'Skipping product: {product_id}. Current quote size: {quote_size}, current balance: {usdc_balance}')
             continue
         
         rest_client.market_order_buy(client_order_id=order_id, product_id=product_id, quote_size=str(quote_size))
-        time.sleep(8)
+        time.sleep(5)
         sell_limit_product(rest_client=rest_client, product_id=product_id, buy_price=price)
-        time.sleep(3)
+        time.sleep(2)
         
     
     
